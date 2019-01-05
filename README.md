@@ -16,8 +16,10 @@ npm run build
 
 # build for production and view the bundle analyzer report
 npm run build --report
+
 axios用于前后台数据交互
 npm install axios
+
 ElementUI用于页面ui设计
 npm install element-ui
 ```
