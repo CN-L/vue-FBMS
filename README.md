@@ -16,6 +16,10 @@ npm run build
 
 # build for production and view the bundle analyzer report
 npm run build --report
+axios用于前后台数据交互
+npm install axios
+ElementUI用于页面ui设计
+npm install element-ui
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
