@@ -6,7 +6,7 @@
        <img class="pic1" src="@/assets/logo.png" alt="">
   </el-col>
   <el-col :span="19">
-    <div class="title">蒙娜丽萨纪念管理系统</div>
+    <div class="title">兵工后台系统</div>
   </el-col>
   <el-col :span="1">
    <div class="logout"><a  @click.prevent="handleLogout">退出</a></div>
@@ -26,7 +26,7 @@
           <i class="el-icon-location"></i>
           <span>用户管理</span>
         </template>
-          <el-menu-item index="/user">
+          <el-menu-item index="/users">
                 <i class="el-icon-menu"></i>
                 用户列表
           </el-menu-item>
