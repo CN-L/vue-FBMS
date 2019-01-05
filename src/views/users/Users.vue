@@ -74,7 +74,7 @@ export default {
         var res =  await axios.get('http://localhost:8888/api/private/v1/users?pagenum=1&pagesize=10')
         let { meta: { status, msg } } = res.data;
         if(status==200){
-            // this.$message.success(msg)
+                this.$message.success(msg)
                 let { data: { data:{ users } } } = res;
                 this.list = users;
         }else{
