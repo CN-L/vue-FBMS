@@ -42,8 +42,11 @@
                 label="电话">
             </el-table-column>
             <el-table-column
-                prop="create_time"
+                prop=""
                 label="创建时间">
+                <template slot-scope="scope">
+                    {{ scope.row.create_time | formDate('YYYY-MM-DD')}}
+                </template>
             </el-table-column>
             <el-table-column
                 prop="mg_state"
