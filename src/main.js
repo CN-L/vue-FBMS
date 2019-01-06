@@ -10,7 +10,8 @@ import moment from 'moment';
 import axios from 'axios';
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
-
+// 设置全局请求基地址
+axios.defaults.baseURL = 'http://localhost:8888/api/private/v1';
 // 配置全局axios
 Vue.prototype.$http = axios;
 /* eslint-disable no-new */

@@ -106,7 +106,7 @@ export default {
         //   需要在请求头添加Authorization = token,zxios中有介绍
         var token = sessionStorage.getItem('token');
         this.$http.defaults.headers.common['Authorization'] = token;
-        var res =  await this.$http.get('http://localhost:8888/api/private/v1/users?pagenum=1&pagesize=10')
+        var res =  await this.$http.get('/users?pagenum=1&pagesize=10')
         let { meta: { status, msg } } = res.data;
         if(status==200){
                 this.$message.success(msg)

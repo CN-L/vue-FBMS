@@ -34,7 +34,7 @@ export default {
     methods:{
       //处理登陆
      async handleLogin(){
-      var res = await axios.post('http://localhost:8888/api/private/v1/login',this.formData)
+      var res = await axios.post('/login',this.formData)
      let { data:  { meta:{ msg,status } } } = res;
      //提示成功
     if(status == 200) {
