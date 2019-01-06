@@ -51,6 +51,30 @@
             </el-table-column>
             <el-table-column
                 label="操作">
+                <!-- scope.row获取当前行的数据 -->
+                <!-- scope.$index获取当前的下标 -->
+                <template slot-scope="scope">
+                  <el-button
+                  type="primary"
+                  icon="el-icon-edit"
+                  size="mini"
+                  circle
+                  plain></el-button>
+                  <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  size="mini"
+                  plain
+                  circle>
+                  </el-button>
+                  <el-button
+                  type="success"
+                  icon="el-icon-check"
+                  size="mini"
+                  plain
+                  circle>
+                  </el-button>
+                </template>
             </el-table-column>
         </el-table>
   </el-card>
