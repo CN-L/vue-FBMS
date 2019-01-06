@@ -64,7 +64,7 @@
                 label="操作">
                 <!-- scope.row获取当前行的数据 -->
                 <!-- scope.$index获取当前的下标 -->
-                <template slot-scope="scope">
+                <template slot-scope = "scope">
                   <el-button
                   type="primary"
                   icon="el-icon-edit"
@@ -89,6 +89,23 @@
                 </template>
             </el-table-column>
         </el-table>
+        <!-- page-size 每页显示多少条数
+        pager-count    最多显示页数 大于等于5小于等于21的奇数
+        total   总共多少条
+        current-page当前页码
+        @size-change 每页显示多少条时改变
+        @current-change 页码改变时候
+        -->
+        <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentCchange"
+          layout="total,sizes,prev, pager, next,jumper"
+          :page-size="pagesize"
+          :page-sizes="[2,4,6,8]"
+          :pager-count="7"
+          :current-page="pagenum"
+          :total="count">
+        </el-pagination>
   </el-card>
 </template>
 <script>
@@ -96,6 +113,12 @@ export default {
     data(){
         return {
               list:[],
+            //   页码
+              pagenum:1,
+            //   每页显示多少条
+              pagesize:2,
+            //   总条数
+              count:0
         }
     },
     created:function(){
@@ -105,10 +128,18 @@ export default {
       async  loadList(){
         //   需要在请求头添加Authorization = token,zxios中有介绍
         var token = sessionStorage.getItem('token');
+
         this.$http.defaults.headers.common['Authorization'] = token;
-        var res =  await this.$http.get('/users?pagenum=1&pagesize=10')
+
+        var res =  await this.$http.get(`/users?pagenum=${ this.pagenum }&pagesize=${this.pagesize}`)
         let { meta: { status, msg } } = res.data;
+        // 请求成功
         if(status==200){
+            // 获取分页数据
+            // 总条数和当前页码数
+            let { data: { data: { pagenum,total } } } = res;
+            this.pagenum = pagenum;
+            this.count = total;
                 this.$message.success(msg)
                 let { data: { data:{ users } } } = res;
                 this.list = users;
