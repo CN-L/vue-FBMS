@@ -7,9 +7,12 @@ import App from './App';
 import router from './router';
 import '@/assets/css/index.css';
 import moment from 'moment';
+import axios from 'axios';
 Vue.use(ElementUI);
 Vue.config.productionTip = false;
 
+// 配置全局axios
+Vue.prototype.$http = axios;
 /* eslint-disable no-new */
 // 格式化日期
 Vue.filter('formDate', (value, fmtString) => {
