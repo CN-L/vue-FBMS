@@ -48,6 +48,14 @@
             <el-table-column
                 prop="mg_state"
                 label="用户状态">
+                <template slot-scope="scope">
+                    <!-- 开关按钮 -->
+                   <el-switch
+                        v-model="scope.row.mg_state"
+                        active-color="#13ce66"
+                        inactive-color="#ff4949">
+                    </el-switch>
+                </template>
             </el-table-column>
             <el-table-column
                 label="操作">
@@ -59,7 +67,8 @@
                   icon="el-icon-edit"
                   size="mini"
                   circle
-                  plain></el-button>
+                  plain>
+                  </el-button>
                   <el-button
                   type="danger"
                   icon="el-icon-delete"
@@ -84,7 +93,7 @@ import axios from 'axios'
 export default {
     data(){
         return {
-              list:[]
+              list:[],
         }
     },
     created:function(){
