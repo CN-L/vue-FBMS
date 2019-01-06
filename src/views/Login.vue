@@ -9,9 +9,9 @@
   <el-form-item label="用户名">
     <el-input v-model="formData.username"></el-input>
   </el-form-item>
-  <el-form-item label="密码" >
+  <el-form-item label="密码">
     <!-- .native告诉组件我想用原生的DOM事件 -->
-    <el-input @keyup.enter.native="handleLogin" v-model="formData.password"></el-input>
+    <el-input type="password" @keyup.enter.native="handleLogin" v-model="formData.password"></el-input>
   </el-form-item>
   <el-form-item>
     <el-button @click="handleLogin" type="primary" class="btn">登陆</el-button>
