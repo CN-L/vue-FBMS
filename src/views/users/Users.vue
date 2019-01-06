@@ -98,7 +98,7 @@
         -->
         <el-pagination
         @size-change="handleSizeChange"
-        @current-change="handleCurrentCchange"
+        @current-change="handleCurrentChange"
           layout="total,sizes,prev, pager, next,jumper"
           :page-size="pagesize"
           :page-sizes="[2,4,6,8]"
@@ -146,7 +146,20 @@ export default {
         }else{
             this.$message.warning(msg)
         }
-     }
+     },
+    //  每页显示数据条数变化时触发
+     handleSizeChange(val) {
+        //  更新每页显示条数
+        this.pagesize = val;
+        this.loadList();
+      },
+      // 当页码发生改变时触发
+      handleCurrentChange(val) {
+        //   将当前页码更新
+        this.pagenum = val;
+        //页面重新加载
+        this.loadList();
+      }
     }
 }
 </script>
