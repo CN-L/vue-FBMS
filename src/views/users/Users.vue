@@ -30,7 +30,7 @@
           <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" class="scopeIcon">
         <!-- scope.row获取当前行的数据 -->
         <!-- scope.$index获取当前的下标 -->
         <template slot-scope="scope">
@@ -52,7 +52,7 @@
       @current-change="handleCurrentChange"
       layout="total,sizes,prev, pager, next,jumper"
       :page-size="pagesize"
-      :page-sizes="[2,4,6,8]"
+      :page-sizes="[10,20,40,100]"
       :pager-count="7"
       :current-page="pagenum"
       :total="count"
@@ -72,13 +72,13 @@
         <el-form-item label="邮箱">
           <el-input v-model="form.email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="手机号">
+        <el-form-item label="电话">
           <el-input v-model="form.mobile" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addUserdialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addUserdialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="addList">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -91,7 +91,7 @@ export default {
       //   页码
       pagenum: 1,
       //   每页显示多少条
-      pagesize: 2,
+      pagesize: 10,
       //   总条数
       count: 0,
       searchValue: "",
@@ -161,6 +161,24 @@ export default {
     // 查找功能实现
     handleSearch() {
       this.loadList();
+    },
+    // 添加用户处理函数
+    async addList(){
+        let res = await this.$http.post('/users',this.form);
+        const {data:{meta:{status,msg}}} = res;
+        if(status == 201){
+            // 清空表单
+            this.form = ''
+            // 成功提示
+            this.$message.success('添加成功');
+            // 关闭对话框
+            this.addUserdialogFormVisible = false;
+            // 重新加载数据
+            this.loadList();
+        }else{
+            // 失败提示
+            this.$message.error(msg)
+        }
     }
   }
 };

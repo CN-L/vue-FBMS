@@ -150,4 +150,7 @@ export default {
     .menu{
         height: 100%;
     }
+    .main{ 
+        overflow-x: hidden; overflow-y: auto;
+         }
 </style>
