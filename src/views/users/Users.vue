@@ -61,12 +61,13 @@
     <el-dialog title="添加用户"
     :visible="addUserdialogFormVisible">
       <el-form
+      :rules="rules"
       label-width="80px"
       :model="form">
-        <el-form-item label="用户名">
+        <el-form-item label="用户名" prop="username">
           <el-input v-model="form.username" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码" prop="password">
           <el-input type ="password" v-model="form.password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮箱">
@@ -99,9 +100,19 @@ export default {
       addUserdialogFormVisible: false,
       form:{
        username:'',
-       passworld:'',
+       password:'',
        email:'',
        mobile:''
+      },
+      rules:{
+        username: [
+            { required: true, message: '请输入用户名', trigger: 'blur' },
+            { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          ],
+        password:[
+            { required: true, message: '请输入密码', trigger: 'blur' },
+            { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
+        ]
       }
     };
   },
@@ -131,8 +142,9 @@ export default {
             data: { pagenum, total }
           }
         } = res;
-        // 更新每页显示条数
+        // 更新页码
         this.pagenum = pagenum;
+        console.log(this.pagenum)
         //更新总条数
         this.count = total;
         let {
