@@ -62,6 +62,7 @@
     :visible="addUserdialogFormVisible">
       <el-form
       :rules="rules"
+      ref="addForm"
       label-width="80px"
       :model="form">
         <el-form-item label="用户名" prop="username">
@@ -176,11 +177,14 @@ export default {
     },
     // 添加用户处理函数
     async addList(){
-        let res = await this.$http.post('/users',this.form);
-        const {data:{meta:{status,msg}}} = res;
-        if(status == 201){
+      this.$refs.addForm.validate(async (valid)=>{
+        if(valid){
+          let res = await this.$http.post('/users',this.form);
+          const {data:{meta:{status,msg}}} = res;
+          if(status == 201){
             // 清空表单
-            this.form = ''
+            this.$refs.addForm.resetFields();
+           // this.form = ''
             // 成功提示
             this.$message.success('添加成功');
             // 关闭对话框
@@ -191,6 +195,11 @@ export default {
             // 失败提示
             this.$message.error(msg)
         }
+        
+        }else{
+          return false;
+        }
+      })
     }
   }
 };
