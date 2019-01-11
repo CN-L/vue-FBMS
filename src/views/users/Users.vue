@@ -34,7 +34,7 @@
         <!-- scope.row获取当前行的数据 -->
         <!-- scope.$index获取当前的下标 -->
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" size="mini" circle plain></el-button>
+          <el-button type="primary" icon="el-icon-edit" @click ="editUserdialogFormVisible=true" size="mini" circle plain></el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini" plain circle></el-button>
           <el-button type="success" icon="el-icon-check" size="mini" plain circle></el-button>
         </template>
@@ -83,6 +83,28 @@
         <el-button type="primary" @click="addList">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 编辑对话框 -->
+        <el-dialog title="编辑用户"
+     :visible.sync="editUserdialogFormVisible">
+      <el-form
+      ref="editForm"
+      label-width="80px"
+      :model="form">
+        <el-form-item label="用户名" prop="username">
+          <el-input disabled="true" v-model="form.username" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="mobile">
+          <el-input v-model="form.mobile" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="errorHandle">取 消</el-button>
+        <el-button type="primary" @click="addList">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 <script>
@@ -99,6 +121,8 @@ export default {
       searchValue: "",
     //   添加对话框显示与隐藏
       addUserdialogFormVisible: false,
+      // 编辑对话框
+      editUserdialogFormVisible:false,
       form:{
        username:'',
        password:'',
