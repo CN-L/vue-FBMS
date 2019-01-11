@@ -12,7 +12,7 @@
         <el-input v-model="searchValue" clearable placeholder="请输入内容" class="searchInput">
           <el-button @click="handleSearch" slot="append" icon="el-icon-search"></el-button>
         </el-input>
-        <el-button type="success" @click="addUserdialogFormVisible = true" plain>添加用户</el-button>
+        <el-button type="success" @click="addUsersForm" plain>添加用户</el-button>
       </el-col>
     </el-row>
     <!-- table表格 -->
@@ -59,7 +59,7 @@
     ></el-pagination>
     <!-- 添加用户对话框 -->
     <el-dialog title="添加用户"
-    :visible="addUserdialogFormVisible">
+     :visible.sync="addUserdialogFormVisible">
       <el-form
       :rules="rules"
       ref="addForm"
@@ -71,15 +71,15 @@
         <el-form-item label="密码" prop="password">
           <el-input type ="password" v-model="form.password" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="邮箱">
+        <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="电话">
+        <el-form-item label="电话" prop="mobile">
           <el-input v-model="form.mobile" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="addUserdialogFormVisible = false">取 消</el-button>
+        <el-button @click="errorHandle">取 消</el-button>
         <el-button type="primary" @click="addList">确 定</el-button>
       </div>
     </el-dialog>
@@ -114,6 +114,7 @@ export default {
             { required: true, message: '请输入密码', trigger: 'blur' },
             { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ]
+
       }
     };
   },
@@ -121,6 +122,10 @@ export default {
     this.loadList();
   },
   methods: {
+    // 对话框显示与隐藏
+    addUsersForm(){
+      this.addUserdialogFormVisible = true
+    },
     async loadList() {
       //   需要在请求头添加Authorization = token,zxios中有介绍
       var token = sessionStorage.getItem("token");
@@ -145,7 +150,6 @@ export default {
         } = res;
         // 更新页码
         this.pagenum = pagenum;
-        console.log(this.pagenum)
         //更新总条数
         this.count = total;
         let {
@@ -158,6 +162,7 @@ export default {
         this.$message.warning(msg);
       }
     },
+  
     //  每页显示数据条数变化时触发
     handleSizeChange(val) {
       //  更新每页显示条数
@@ -183,7 +188,7 @@ export default {
           const {data:{meta:{status,msg}}} = res;
           if(status == 201){
             // 清空表单
-            this.$refs.addForm.resetFields();
+            
            // this.form = ''
             // 成功提示
             this.$message.success('添加成功');
@@ -191,16 +196,24 @@ export default {
             this.addUserdialogFormVisible = false;
             // 重新加载数据
             this.loadList();
+            this.$refs.addForm.resetFields();
         }else{
             // 失败提示
             this.$message.error(msg)
-        }
+          }
         
         }else{
           return false;
         }
       })
-    }
+    },
+    // 点击取消时的操作
+    errorHandle(){
+      // 关闭弹框
+      this.addUserdialogFormVisible = false;
+      // 清空表单
+      this.$refs.addForm.resetFields();
+    },
   }
 };
 </script>
