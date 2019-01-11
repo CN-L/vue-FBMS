@@ -34,7 +34,7 @@
         <!-- scope.row获取当前行的数据 -->
         <!-- scope.$index获取当前的下标 -->
         <template slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" @click ="editUserdialogFormVisible=true" size="mini" circle plain></el-button>
+          <el-button type="primary" icon="el-icon-edit" @click ="editHandleClik(scope)" size="mini" circle plain></el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini" plain circle></el-button>
           <el-button type="success" icon="el-icon-check" size="mini" plain circle></el-button>
         </template>
@@ -146,13 +146,23 @@ export default {
     this.loadList();
   },
   methods: {
-    // 对话框显示与隐藏
+    //点击编辑按钮
+    editHandleClik(scope){
+      // 弹出编辑框
+      this.editUserdialogFormVisible=true
+      // 熏染当前数据
+      this.form.username = scope.row.username;
+      this.form.email = scope.row.email;
+      this.form.mobile = scope.row.mobile;
+    },
+    // 点击添加用户
     addUsersForm(){
+      // 弹出添加对话框
       this.addUserdialogFormVisible = true
     },
-    // 编辑功能
+    // 编辑功能点击确定
     editList(){
-      console.log('更改成功')
+    // 获取当前用户输入的数据，全局发送给后台，达到更改的目的
     },
     // 点击取消
     editHandle(){
