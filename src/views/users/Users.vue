@@ -101,8 +101,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="errorHandle">取 消</el-button>
-        <el-button type="primary" @click="addList">确 定</el-button>
+        <el-button @click="editHandle">取 消</el-button>
+        <el-button type="primary" @click="editList">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -149,6 +149,14 @@ export default {
     // 对话框显示与隐藏
     addUsersForm(){
       this.addUserdialogFormVisible = true
+    },
+    // 编辑功能
+    editList(){
+      console.log('更改成功')
+    },
+    // 点击取消
+    editHandle(){
+      this.from ="";
     },
     async loadList() {
       //   需要在请求头添加Authorization = token,zxios中有介绍
