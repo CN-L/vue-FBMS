@@ -27,7 +27,7 @@
       <el-table-column prop="mg_state" label="用户状态">
         <template slot-scope="scope">
           <!-- 开关按钮 -->
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <el-switch v-model="scope.row.mg_state" @change="userStatus(scope.row)" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="操作" class="scopeIcon">
@@ -174,6 +174,16 @@ export default {
             message: '已取消删除'
           });          
         });
+},
+// 状态改变事件
+ async userStatus(user){
+    let res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`)
+    let { data:{meta:{msg,status}}} = res;
+    if(status == 200){
+      this.$message.success(msg)
+    }else{
+      this.$message.error(msg);
+    }
 },
    //点击编辑按钮
     editHandleClik(user){
