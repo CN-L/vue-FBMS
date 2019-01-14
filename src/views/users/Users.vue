@@ -35,7 +35,7 @@
         <!-- scope.$index获取当前的下标 -->
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" @click ="editHandleClik(scope.row)" size="mini" circle plain></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini" plain circle></el-button>
+          <el-button type="danger" icon="el-icon-delete" @click="deleteHandle(scope.row.id)" size="mini" plain circle></el-button>
           <el-button type="success" icon="el-icon-check" size="mini" plain circle></el-button>
         </template>
       </el-table-column>
@@ -146,7 +146,36 @@ export default {
     this.loadList();
   },
   methods: {
-    //点击编辑按钮
+    //  删除功能实现
+    // list的数据并不是所有的，而是每次加载最多显示十条数据，根据分页，开始时候获取的只是十条数据，因为list长度可适用于当前页的长度
+    async deleteHandle(id){
+       let res = await this.$http.delete(`/users/${id}`)
+      let {data:{meta:{status,msg}}} = res;
+       this.$confirm('是否删除此条数据?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async () => {
+          if(status == 200){
+            // 如果只剩这一条数据 并且它的页码不是1的时候，先去减掉一页 再去重新加载
+            if(this.list.length = 1 && this.pagenum !==1){
+              this.pagenum--;
+              this.loadList();
+            }
+            this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.loadList()
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+},
+   //点击编辑按钮
     editHandleClik(user){
       // 弹出编辑框
       this.editUserdialogFormVisible=true
@@ -154,6 +183,7 @@ export default {
       this.form.username = user.username;
       this.form.email = user.email;
       this.form.mobile = user.mobile;
+      this.form.id = user.id;
     },
     // 点击添加用户
     addUsersForm(){
@@ -161,15 +191,36 @@ export default {
       this.addUserdialogFormVisible = true
     },
     // 编辑功能点击确定
-    editList(){
+    async editList(){
     // 获取当前用户输入的数据，全局发送给后台，达到更改的目的
-    },
+    let res = await this.$http.put(`users/${this.form.id }`,{
+      email:this.form.email,
+      mobile:this.form.mobile
+    });
+     
+      //  判断是否成功
+      let{ data: { meta: { msg,status } } } = res;
+      if( status === 200){
+        this.editUserdialogFormVisible = false;
+        this.$message.success(msg)
+        this.from.username = '';
+        this.form.email = '';
+        this.form.mobile = '';
+      }else{
+        this.$message.error(msg)
+      }
+     
+},
     // 点击取消
     editHandle(){
-      this.from ="";
+       this.form.username = '';
+       this.form.email = '';
+       this.form.mobile = '';
+       this.editUserdialogFormVisible = false;
+
     },
     async loadList() {
-      //   需要在请求头添加Authorization = token,zxios中有介绍
+      //   需要在请求头添加Authorization = token,axios中有介绍
       var token = sessionStorage.getItem("token");
 
       this.$http.defaults.headers.common["Authorization"] = token;
