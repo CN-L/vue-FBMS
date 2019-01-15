@@ -36,7 +36,7 @@
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" @click ="editHandleClik(scope.row)" size="mini" circle plain></el-button>
           <el-button type="danger" icon="el-icon-delete" @click="deleteHandle(scope.row.id)" size="mini" plain circle></el-button>
-          <el-button type="success" icon="el-icon-check" @click="{setRoledialogVisible = true}" size="mini" plain circle></el-button>
+          <el-button type="success" icon="el-icon-check" @click="checktOutHandle(scope.row)" size="mini" plain circle></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -110,7 +110,7 @@
       title="分配角色"
       :visible.sync="setRoledialogVisible"
       width="30%"
-      :before-close="handleClose">
+      >
       <el-form
       label-width="100px"
       >
@@ -120,15 +120,16 @@
         <el-form-item  class ="jiose" label="请选择角色">
           <el-select v-model="currentRoleId">
             <el-option label="请选择" disabled :value="-1"></el-option>
-            <el-option label="区域1" :value="shanghai"></el-option>
-            <el-option label="区域2" :value="beijing"></el-option>
+            <el-option
+            v-for="item in roles "
+            :key="item.id"
+            :label="item.roleName"
+            :value="item.id">
+            </el-option>
           </el-select>
         </el-form-item>
       </el-form>
-
-</el-dialog>
-
-
+     </el-dialog>
   </el-card>
 </template>
 <script>
@@ -146,12 +147,15 @@ export default {
       // 分配角色
       currentRoleId:-1,
       currentName:'',
+      currentUserId:-1,
     //   添加对话框显示与隐藏
       addUserdialogFormVisible: false,
       // 编辑对话框
       editUserdialogFormVisible:false,
       //分配角色对话框
       setRoledialogVisible:false,
+      // 角色列表
+      roles:[],
       form:{
        username:'',
        password:'',
@@ -214,6 +218,20 @@ export default {
       this.$message.error(msg);
     }
 },
+// 点击角色分配按钮
+    async checktOutHandle(user){
+     this.setRoledialogVisible = true
+     this.currentName = user.username;
+     this.currentUserId = user.id;
+     let res = await this.$http.get(`/roles`);
+     let {data:{meta:{msg,status}}} = res;
+       this.roles = res.data.data;
+      //  角色id
+      let userResdata = await this.$http.get(`/users/${ user.id }`);
+      console.log(userResdata)
+      this.currentRoleId = userResdata.data.data.rid;
+          },
+
    //点击编辑按钮
     editHandleClik(user){
       // 弹出编辑框
