@@ -129,6 +129,10 @@
           </el-select>
         </el-form-item>
       </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="setRoledialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="jurisdiction">确 定</el-button>
+      </div>
      </el-dialog>
   </el-card>
 </template>
@@ -144,9 +148,11 @@ export default {
       //   总条数
       count: 0,
       searchValue: "",
-      // 分配角色
+      // 分配角色 角色权限分配 默认是请选择
       currentRoleId:-1,
+      // 角色名称
       currentName:'',
+      // 用户id ，通过scope.row赋值过来的
       currentUserId:-1,
     //   添加对话框显示与隐藏
       addUserdialogFormVisible: false,
@@ -179,6 +185,19 @@ export default {
     this.loadList();
   },
   methods: {
+    // 实现分配角色
+    async jurisdiction(){
+        let res = await this.$http.put(`users/${this.currentUserId}/role`,{
+          rid:this.currentRoleId
+        })
+     let {data:{meta:{msg,status}}} = res;
+     if(status == 200){
+       this.setRoledialogVisible = false
+       this.$message.success(msg);
+     }else{
+       this.$message.error(msg);
+     }
+    },
     //  删除功能实现
     // list的数据并不是所有的，而是每次加载最多显示十条数据，根据分页，开始时候获取的只是十条数据，因为list长度可适用于当前页的长度
     async deleteHandle(id){
@@ -215,7 +234,7 @@ export default {
     if(status == 200){
       this.$message.success(msg)
     }else{
-      this.$message.error(msg);
+      this.$mesasage.error(msg);
     }
 },
 // 点击角色分配按钮
@@ -223,6 +242,7 @@ export default {
      this.setRoledialogVisible = true
      this.currentName = user.username;
      this.currentUserId = user.id;
+     console.log(this.currentUserId);
      let res = await this.$http.get(`/roles`);
      let {data:{meta:{msg,status}}} = res;
        this.roles = res.data.data;
