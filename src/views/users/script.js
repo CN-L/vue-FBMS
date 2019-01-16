@@ -35,11 +35,10 @@ export default {
               { required: true, message: '请输入用户名', trigger: 'blur' },
               { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
             ],
-          password:[
+          password: [
               { required: true, message: '请输入密码', trigger: 'blur' },
               { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
           ]
-  
         }
       };
     },
@@ -127,8 +126,8 @@ export default {
       // 状态改变事件
       async userStatus(user){
           let res = await this.$http.put(`users/${user.id}/state/${user.mg_state}`)
-          let { data:{meta:{msg,status}}} = res;
-          if(status == 200){
+          let { data: { meta: { msg,status } } } = res;
+          if( status == 200 ){
             this.$message.success(msg)
           }else{
             this.$mesasage.error(msg);
@@ -139,13 +138,11 @@ export default {
           this.setRoledialogVisible = true
           this.currentName = user.username;
           this.currentUserId = user.id;
-          console.log(this.currentUserId);
           let res = await this.$http.get(`/roles`);
           let {data:{meta:{msg,status}}} = res;
             this.roles = res.data.data;
             //  角色id
             let userResdata = await this.$http.get(`/users/${ user.id }`);
-            console.log(userResdata)
             this.currentRoleId = userResdata.data.data.rid;
         },  
         //点击编辑按钮
@@ -178,7 +175,7 @@ export default {
             }  
         },
           // 点击取消
-          editHandle(){
+          editHandle() {
             this.form.username = '';
             this.form.email = '';
             this.form.mobile = '';
@@ -202,15 +199,14 @@ export default {
             this.loadList();
           },
           // 添加用户处理函数
-          async addList(){
+          async addList() {
             this.$refs.addForm.validate(async (valid)=>{
-              if(valid){
+              if(valid) {
                 let res = await this.$http.post('/users',this.form);
-                const {data:{meta:{status,msg}}} = res;
-                if(status == 201){
+                const {data: { meta: { status, msg } }} = res;
+                if (status == 201) {
                   // 清空表单
-                  
-                // this.form = ''
+                  // this.form = ''
                   // 成功提示
                   this.$message.success('添加成功');
                   // 关闭对话框
@@ -218,18 +214,17 @@ export default {
                   // 重新加载数据
                   this.loadList();
                   this.$refs.addForm.resetFields();
-              }else{
+              } else {
                   // 失败提示
                   this.$message.error(msg)
                 }
-              
-              }else{
+              } else {
                 return false;
               }
-             })
+             });
           },
          // 点击取消时的操作
-        errorHandle(){
+        errorHandle() {
             // 关闭弹框
             this.addUserdialogFormVisible = false;
             // 清空表单
