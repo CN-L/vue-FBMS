@@ -5,6 +5,7 @@
         <el-breadcrumb-item>权限管理</el-breadcrumb-item>
         <el-breadcrumb-item>权限列表</el-breadcrumb-item>
     </span>
+    <!-- 表格 -->
      <el-table
       border
       stripe
