@@ -20,7 +20,6 @@
       router
       unique-opened
       class="menu"
-      default-active
       >
       <el-submenu index="/users">
         <template slot="title">
