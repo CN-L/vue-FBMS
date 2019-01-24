@@ -8,10 +8,13 @@ import router from './router';
 import '@/assets/css/index.css';
 import moment from 'moment';
 import myrequire from '@/assets/js/require';
+import myBreadcrumb from '@/components/my-breadcrumb';
 Vue.use(ElementUI);
 Vue.use(myrequire);
 Vue.config.productionTip = false;
 /* eslint-disable no-new */
+// 注册全局组建
+Vue.component(myBreadcrumb.name, myBreadcrumb);
 // 格式化日期
 Vue.filter('formDate', (value, fmtString) => {
   return moment(value).format(fmtString);
