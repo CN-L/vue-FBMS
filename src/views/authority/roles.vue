@@ -13,7 +13,7 @@
       style="width: 100%">
     <el-table-column type="expand">
       <template slot-scope="scope">
-       <!-- 一级菜单 -->
+       <!-- 一级菜单 因为table表格数据已经有了，因此不需要再次发送ajax-->
        <el-row
        v-for="item in scope.row.children"
        :key="item.id">
@@ -50,9 +50,12 @@
                   >
                       {{level2.authName}}
                   </el-tag>
-                  </el-col>
+                </el-col>
               </el-row>
            </el-col>
+       </el-row>
+       <el-row v-if="scope.row.children.length==0">
+          <el-col :span="24">没有权限</el-col> 
        </el-row>
       </template>
     </el-table-column>
