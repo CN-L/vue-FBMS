@@ -23,7 +23,19 @@
                closable
                  >{{item.authName}}</el-tag>
            </el-col>
-           <el-col :span="20"></el-col>
+           <el-col :span="20">
+              <!-- 二级权限 -->
+              <el-row
+              v-for="level in item.children"
+              :key="level.id">
+                  <el-col :span="4">
+                      <el-tag>
+                          {{level.authName}}
+                      </el-tag>
+                  </el-col>
+                  <el-col :span="20"></el-col>
+              </el-row>
+           </el-col>
        </el-row>
       </template>
     </el-table-column>
