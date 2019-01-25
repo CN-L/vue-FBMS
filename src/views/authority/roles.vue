@@ -20,6 +20,7 @@
            <el-col :span="4">
                <!-- 显示一级权限名称 -->
                <el-tag
+               type="success"
                closable
                  >{{item.authName}}</el-tag>
            </el-col>
@@ -28,12 +29,28 @@
               <el-row
               v-for="level in item.children"
               :key="level.id">
-                  <el-col :span="4">
-                      <el-tag>
+                  <el-col
+                  :span="4">
+                      <el-tag
+                      closable
+                      type="warning"
+                      >
                           {{level.authName}}
                       </el-tag>
                   </el-col>
-                  <el-col :span="20"></el-col>
+                  <el-col
+                  :span ="20"
+                  >
+                  <el-tag 
+                  class="level2"
+                  v-for ="level2 in level.children"
+                  :key="level2.id"
+                  type="danger"
+                  closable
+                  >
+                      {{level2.authName}}
+                  </el-tag>
+                  </el-col>
               </el-row>
            </el-col>
        </el-row>
@@ -97,7 +114,8 @@ export default {
     margin-top: 10px;
     margin-bottom: 10px;
 }
-el-tag{
-    margin-top: 10px
+.level2{
+    margin-bottom: 10px;
+    margin-left:10px;
 }
 </style>
