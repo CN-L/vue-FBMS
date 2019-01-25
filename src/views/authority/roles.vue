@@ -11,7 +11,23 @@
         v-loading="loading"
       :data="list"
       style="width: 100%">
-      <el-table-column
+    <el-table-column type="expand">
+      <template slot-scope="scope">
+       <!-- 一级菜单 -->
+       <el-row
+       v-for="item in scope.row.children"
+       :key="item.id">
+           <el-col :span="4">
+               <!-- 显示一级权限名称 -->
+               <el-tag
+               closable
+                 >{{item.authName}}</el-tag>
+           </el-col>
+           <el-col :span="20"></el-col>
+       </el-row>
+      </template>
+    </el-table-column>
+    <el-table-column
        type="index"
         width="180">
       </el-table-column>
@@ -68,5 +84,8 @@ export default {
 .roles{
     margin-top: 10px;
     margin-bottom: 10px;
+}
+el-tag{
+    margin-top: 10px
 }
 </style>
