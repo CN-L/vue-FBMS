@@ -20,7 +20,7 @@
            <el-col :span="4">
                <!-- 显示一级权限名称 -->
                <el-tag
-               @close="deleteTag(scope.row.id,item.id)"
+               @close="deleteTag(scope.row,item.id)"
                type="success"
                closable
                  >{{item.authName}}</el-tag>
@@ -35,7 +35,7 @@
                       <el-tag
                       closable
                       type="warning"
-                      @close="deleteTag(scope.row.id,level.id)"
+                      @close="deleteTag(scope.row,level.id)"
                       >
                           {{level.authName}}
                       </el-tag>
@@ -49,7 +49,7 @@
                   :key="level2.id"
                   type="danger"
                   closable
-                  @close="deleteTag(scope.row.id,level2.id)"
+                  @close="deleteTag(scope.row,level2.id)"
                   >
                       {{level2.authName}}
                   </el-tag>
@@ -110,13 +110,14 @@ export default {
          }
      },
     //  动态标签点击x（删除权限），删除当前角色对应的权限
-     async deleteTag(roleId,rightId){
-         let res = await this.$http.delete(`/roles/${roleId}/rights/${rightId}`)
+     async deleteTag(role,rightId){
+         let res = await this.$http.delete(`/roles/${role.id}/rights/${rightId}`)
         //  解构赋值
         let { data: { meta: { msg,status } } } = res;
         if(status == 200){
             this.$message.success(msg);
-            this.loadList();
+        //    局部重新加载（而不是重新加载整个页面
+            role.children = res.data.data;
         }else{
             this.$message.error(msg);
         }
