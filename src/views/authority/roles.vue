@@ -9,7 +9,7 @@
         border
         stripe
         v-loading="loading"
-      :data="list"
+        :data="list"
       style="width: 100%">
     <el-table-column type="expand">
       <template slot-scope="scope">
@@ -20,6 +20,7 @@
            <el-col :span="4">
                <!-- 显示一级权限名称 -->
                <el-tag
+               @close="deleteTag(scope.row.id,item.id)"
                type="success"
                closable
                  >{{item.authName}}</el-tag>
@@ -34,6 +35,7 @@
                       <el-tag
                       closable
                       type="warning"
+                      @close="deleteTag(scope.row.id,level.id)"
                       >
                           {{level.authName}}
                       </el-tag>
@@ -47,6 +49,7 @@
                   :key="level2.id"
                   type="danger"
                   closable
+                  @close="deleteTag(scope.row.id,level2.id)"
                   >
                       {{level2.authName}}
                   </el-tag>
@@ -54,7 +57,7 @@
               </el-row>
            </el-col>
        </el-row>
-       <el-row v-if="scope.row.children.length==0">
+       <el-row v-if="scope.row.children==0">
           <el-col :span="24">没有权限</el-col> 
        </el-row>
       </template>
@@ -105,6 +108,19 @@ export default {
          }else{
              this.$message.error(msg); 
          }
+     },
+    //  动态标签点击x（删除权限），删除当前角色对应的权限
+     async deleteTag(roleId,rightId){
+         let res = await this.$http.delete(`/roles/${roleId}/rights/${rightId}`)
+        //  解构赋值
+        let { data: { meta: { msg,status } } } = res;
+        if(status == 200){
+            this.$message.success(msg);
+            this.loadList();
+        }else{
+            this.$message.error(msg);
+        }
+        
      }
     }
 }
@@ -112,6 +128,7 @@ export default {
 <style>
 .card{
     height: 100%;
+    overflow: auto;
 }
 .roles{
     margin-top: 10px;
