@@ -81,10 +81,23 @@
          <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" circle plain></el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini" plain circle></el-button>
-          <el-button type="success" icon="el-icon-check"  size="mini" plain circle></el-button>
+          <el-button @click="setRolesdialogVisible=true" type="success" icon="el-icon-check"  size="mini" plain circle></el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 点击分配权限按钮，弹出对话框 -->
+    <el-dialog
+        title="权限分配"
+        :visible.sync="setRolesdialogVisible"
+        width="30%"
+    >
+        <span>这是一段信息</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button @click="setRolesdialogVisible = false">取 消</el-button>
+            <el-button type="primary">确 定</el-button>
+        </span>
+    </el-dialog>
+
    </el-card>
 </template>
 <script>
@@ -92,7 +105,8 @@ export default {
     data(){
         return {
             list:[],
-            loading:true
+            loading:true,
+            setRolesdialogVisible:false
         }
     },
     created(){
