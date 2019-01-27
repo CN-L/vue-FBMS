@@ -81,7 +81,7 @@
          <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" circle plain></el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini" plain circle></el-button>
-          <el-button @click="setRolesdialogVisible=true" type="success" icon="el-icon-check"  size="mini" plain circle></el-button>
+          <el-button @click="dakaiTree" type="success" icon="el-icon-check"  size="mini" plain circle></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -91,7 +91,14 @@
         :visible.sync="setRolesdialogVisible"
         width="30%"
     >
-        <span>这是一段信息</span>
+    <!-- 展示树形控件 -->
+        <el-tree
+        show-checkbox
+        default-expand-all
+        :data="treeList"
+        :props="defaultProps"
+        @node-click="handleNodeClick">
+        </el-tree>
         <span slot="footer" class="dialog-footer">
             <el-button @click="setRolesdialogVisible = false">取 消</el-button>
             <el-button type="primary">确 定</el-button>
@@ -106,7 +113,13 @@ export default {
         return {
             list:[],
             loading:true,
-            setRolesdialogVisible:false
+            setRolesdialogVisible:false,
+            // 绑定树形控件数据
+            treeList:[],
+            defaultProps:{
+            label:'authName',
+            children:'children'
+            }
         }
     },
     created(){
@@ -136,6 +149,12 @@ export default {
             this.$message.error(msg);
         }
         
+     },
+    //  分配权限按钮
+     async dakaiTree(){
+         this.setRolesdialogVisible = true;
+         let res = await this.$http.get('/rights/tree')
+         this.treeList = res.data.data;
      }
     }
 }
