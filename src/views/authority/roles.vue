@@ -81,7 +81,7 @@
          <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="mini" circle plain></el-button>
           <el-button type="danger" icon="el-icon-delete" size="mini" plain circle></el-button>
-          <el-button @click="dakaiTree" type="success" icon="el-icon-check"  size="mini" plain circle></el-button>
+          <el-button @click="dakaiTree(scope.row)" type="success" icon="el-icon-check"  size="mini" plain circle></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,6 +94,9 @@
     <!-- 展示树形控件 -->
         <el-tree
         show-checkbox
+        :default-expanded-keys="[2, 3]"
+        :default-checked-keys="checkList"
+        node-key="id"
         default-expand-all
         :data="treeList"
         :props="defaultProps"
@@ -116,6 +119,8 @@ export default {
             setRolesdialogVisible:false,
             // 绑定树形控件数据
             treeList:[],
+            // 选中数据
+            checkList:[],
             defaultProps:{
             label:'authName',
             children:'children'
@@ -150,11 +155,20 @@ export default {
         }
         
      },
-    //  分配权限按钮
-     async dakaiTree(){
+    //  分配权限按钮,role当前角色对象
+     async dakaiTree(role){
          this.setRolesdialogVisible = true;
          let res = await this.$http.get('/rights/tree')
          this.treeList = res.data.data;
+         //当前加颜色所有的权限id存储到checkList里,目的是展开默认所有行，因此获取所有最后的level2
+         this.checkList = [];
+           role.children.map((item)=>{
+              item.children.map((level)=>{
+                  level.children.map((level2)=>{
+                      this.checkList.push(level2.id)
+                  })
+              })
+           })
      }
     }
 }
