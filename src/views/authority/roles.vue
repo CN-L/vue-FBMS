@@ -94,6 +94,7 @@
     <!-- 展示树形控件 -->
         <el-tree
         show-checkbox
+        ref="tree"
         :default-expanded-keys="[2, 3]"
         :default-checked-keys="checkList"
         node-key="id"
@@ -104,7 +105,7 @@
         </el-tree>
         <span slot="footer" class="dialog-footer">
             <el-button @click="setRolesdialogVisible = false">取 消</el-button>
-            <el-button type="primary">确 定</el-button>
+            <el-button @click="handleSetright" type="primary">确 定</el-button>
         </span>
     </el-dialog>
 
@@ -117,6 +118,8 @@ export default {
             list:[],
             loading:true,
             setRolesdialogVisible:false,
+            // 点击权限分配按钮时进行赋值
+            roleId:-1,
             // 绑定树形控件数据
             treeList:[],
             // 选中数据
@@ -155,8 +158,35 @@ export default {
         }
         
      },
+    //  点击确定按钮 进行权限分配
+    async handleSetright(){
+    //  roleId 角色id
+    // rids 权限id列表
+    const checkListId = this.$refs.tree.getCheckedKeys();
+    const halfCheckedListId = this.$refs.tree.getHalfCheckedKeys();
+    // 合并
+    let arr = [...checkListId,...halfCheckedListId];
+    let res = await this.$http.post(`/roles/${this.roleId}/rights`,{
+        rids:arr.join(',')
+        
+    })
+    let { data: { meta: { msg, status} } } = res;
+    // 成功
+     if(status==200){
+        this.$message(msg);
+        // 关闭对话框
+        this.setRolesdialogVisible = false;
+        //  数据重新加载
+        this.loadList()
+    }else{
+       this.$message.error(msg)
+    }
+    },
+    
     //  分配权限按钮,role当前角色对象
      async dakaiTree(role){
+        //  记录roleId,存储起来
+         this.roleId = role.id;
          this.setRolesdialogVisible = true;
          let res = await this.$http.get('/rights/tree')
          this.treeList = res.data.data;
@@ -169,7 +199,8 @@ export default {
                   })
               })
            })
-     }
+     },
+     
     }
 }
 </script>
