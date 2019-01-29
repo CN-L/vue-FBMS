@@ -24,7 +24,7 @@
       <el-submenu 
       v-for = "item in list"
       :key = "item.id"
-      :index="item.id">
+      :index = "item.id">
         <template slot="title">
           <i class="el-icon-location"></i>
           <span>{{item.authName}}</span>
@@ -68,17 +68,17 @@ export default {
         this.list = res.data.data;
       }
     },
-    beforeCreate(){
-        //获取token，用于登陆验证
-        var token = sessionStorage.getItem('token');
-        //如果没有token
-        if(!token){
-            // 提示
-            this.$message.warning('请先登录');
-            // 跳转登陆页面
-            this.$router.push('/login')
-     }
-    },
+    // beforeCreate(){
+    //     //获取token，用于登陆验证
+    //     var token = sessionStorage.getItem('token');
+    //     //如果没有token
+    //     if(!token){
+    //         // 提示
+    //         this.$message.warning('请先登录');
+    //         // 跳转登陆页面
+    //         this.$router.push('/login')
+    //  }
+    // },
     created () { 
         // 动态菜单
      this.loadList()

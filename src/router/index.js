@@ -8,7 +8,7 @@ import Roles from '@/views/authority/roles';
 
 Vue.use(Router);
 
-export default new Router({
+let router = new Router({
   routes: [
     { name: 'login', path: '/login', component: Login },
     //  嵌套路由
@@ -24,3 +24,17 @@ export default new Router({
     }
   ]
 });
+// 路由的全局前置守卫（拦截器）--路由跳转之前执行 验证是否有携带token权限
+router.beforeEach((to, from, next) => {
+  // 如果是登陆时候不用判断token 根据路由name值
+  if (to.name !== 'login') {
+    let token = sessionStorage.getItem('token');
+    // 如果没有token，跳转登陆页面
+    if (!token) {
+      router.push('login');
+      return;
+    }
+  }
+  next();
+});
+export default router;
