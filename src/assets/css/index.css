@@ -3,3 +3,7 @@ body,html{
     margin: 0;
     height: 100%;
 }
+.card{
+    height: 100%;
+    overflow: auto;
+}
