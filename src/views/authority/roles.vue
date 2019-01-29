@@ -3,27 +3,8 @@
        <!-- 传值的父组件  子组件通过props接收 -->
        <my-breadcrumb level1="权限管理" level2 = "角色列表"></my-breadcrumb>
         <el-row :span="24">
-            <el-button type="success" class="roles" plain @click="addListStatus=true">添加角色</el-button>
+            <el-button type="success" class="roles" plain @click="handleAdd">添加角色</el-button>
         </el-row>
-            <!-- 添加用户对话框 -->
-    <el-dialog
-     title="添加用户"
-     :visible.sync = "addListStatus">
-      <el-form
-      label-width="80px"
-      :model="form">
-        <el-form-item label="角色名称" prop="roleName">
-          <el-input v-model="form.roleName" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="角色描述" prop="roleDesc">
-          <el-input  v-model="form.roleDesc" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="addList">确 定</el-button>
-      </div>
-    </el-dialog>
         <el-table
         border
         stripe
@@ -120,14 +101,34 @@
         default-expand-all
         :data="treeList"
         :props="defaultProps"
-        @node-click="handleNodeClick">
+        >
         </el-tree>
         <span slot="footer" class="dialog-footer">
             <el-button @click="setRolesdialogVisible = false">取 消</el-button>
             <el-button @click="handleSetright" type="primary">确 定</el-button>
         </span>
     </el-dialog>
-
+    <!-- 添加用户对话框 -->
+    <el-dialog
+     title="添加用户"
+     :visible.sync = "addListStatus">
+      <el-form
+      label-width="100px"
+      :rules="rules"
+      ref = "addForm"
+      :model = "form">
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="form.roleName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="roleDesc">
+          <el-input  v-model="form.roleDesc" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click = "handleAddList">确 定</el-button>
+      </div>
+    </el-dialog>
    </el-card>
 </template>
 <script>
@@ -144,6 +145,14 @@ export default {
                 roleName:'',
                 roleDesc:''
             },
+            rules: {
+                roleName: [
+                { required: true, message: '请输入角色名称', trigger: 'blur' }
+                ],
+                roleDesc: [
+                { required: true, message: '请输入角色描述', trigger: 'blur' }
+                ]
+             },
             addListStatus:false,
             // 绑定树形控件数据
             treeList:[],
@@ -169,15 +178,42 @@ export default {
              this.$message.error(msg); 
          }
      },
+      handleAdd(){
+        this.addListStatus =true;
+        this.form.roleName= '';
+        this.form.roleDesc = '';
+    },
     //  添加用户
-     async addList(){
-         this.addListStatus = true;
-         if(!roleName){
-             let res = await this.$http.post(`roles`,this.form)
-             console.log(res);
-         }
+     async handleAddList(){
+         // 表单验证
+      this.$refs.addForm.validate(async (valid) => {
+        if (!valid) {
+          // 表单验证失败，返回
+          return;
+        }
+        // 表单验证成功，添加角色
+        this.addListStatus = false;
+        const res = await this.$http.post('/roles', this.form);
+        if (res.data.meta.status === 201) {
+          this.$message({
+            type: 'success',
+            message: '创建角色成功'
+          });
+          this.form = '';
+          // 重新加载数据
+          this.loadList();
+        } else {
+          this.$message({
+            type: 'erroe',
+            message: '创建角色失败'
+          });
+        }
+      });
      },
+    //  添加用户点击取消操作时
       cancel(){
+        this.form.roleName = '';
+        this.form.roleDesc = '';
         this.addListStatus = false
       },
     //  动态标签点击x（删除权限），删除当前角色对应的权限
@@ -241,10 +277,6 @@ export default {
 }
 </script>
 <style>
-.card{
-    height: 100%;
-    overflow: auto;
-}
 .roles{
     margin-top: 10px;
     margin-bottom: 10px;
