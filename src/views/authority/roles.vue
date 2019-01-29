@@ -3,8 +3,27 @@
        <!-- 传值的父组件  子组件通过props接收 -->
        <my-breadcrumb level1="权限管理" level2 = "角色列表"></my-breadcrumb>
         <el-row :span="24">
-            <el-button type="success" class="roles" plain>添加角色</el-button>
+            <el-button type="success" class="roles" plain @click="addListStatus=true">添加角色</el-button>
         </el-row>
+            <!-- 添加用户对话框 -->
+    <el-dialog
+     title="添加用户"
+     :visible.sync = "addListStatus">
+      <el-form
+      label-width="80px"
+      :model="form">
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="form.roleName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="roleDesc">
+          <el-input  v-model="form.roleDesc" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="addList">确 定</el-button>
+      </div>
+    </el-dialog>
         <el-table
         border
         stripe
@@ -120,6 +139,12 @@ export default {
             setRolesdialogVisible:false,
             // 点击权限分配按钮时进行赋值
             roleId:-1,
+            // 添加用户数据
+            form:{
+                roleName:'',
+                roleDesc:''
+            },
+            addListStatus:false,
             // 绑定树形控件数据
             treeList:[],
             // 选中数据
@@ -144,6 +169,17 @@ export default {
              this.$message.error(msg); 
          }
      },
+    //  添加用户
+     async addList(){
+         this.addListStatus = true;
+         if(!roleName){
+             let res = await this.$http.post(`roles`,this.form)
+             console.log(res);
+         }
+     },
+      cancel(){
+        this.addListStatus = false
+      },
     //  动态标签点击x（删除权限），删除当前角色对应的权限
      async deleteTag(role,rightId){
          let res = await this.$http.delete(`/roles/${role.id}/rights/${rightId}`)
