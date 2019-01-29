@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Login from '@/views/Login';
 import Home from '@/views/Home';
 import Users from '@/views/users/Users';
+import { Message } from 'element-ui';
 import Authority from '@/views/authority/authority';
 import Roles from '@/views/authority/roles';
 
@@ -31,6 +32,7 @@ router.beforeEach((to, from, next) => {
     let token = sessionStorage.getItem('token');
     // 如果没有token，跳转登陆页面
     if (!token) {
+      Message.success('请先登陆');
       router.push('login');
       return;
     }
