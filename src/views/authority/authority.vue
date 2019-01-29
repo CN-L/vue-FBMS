@@ -1,10 +1,6 @@
 <template>
  <el-card class="card">
-    <span>
-        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-        <el-breadcrumb-item>权限管理</el-breadcrumb-item>
-        <el-breadcrumb-item>权限列表</el-breadcrumb-item>
-    </span>
+     <my-breadcrumb level1="权限管理" level2 = "权限列表"></my-breadcrumb>
     <!-- 表格 -->
      <el-table
       border
