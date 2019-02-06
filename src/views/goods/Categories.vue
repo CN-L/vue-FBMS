@@ -12,11 +12,12 @@
       stripe
       :data="list"
       style="width: 100%">
-      <el-table-column
-        prop="cat_name"
-        label="分类名称"
+      <el-table-tree-column
+       prop="cat_name"
+       label="分类名称"
         width="180">
-      </el-table-column>
+       
+      </el-table-tree-column>
       <el-table-column
         prop="cat_level"
         label="级别"
@@ -48,7 +49,12 @@
     </er-card>
 </template>
 <script>
+// 加载treegrid组件 局部组件
+import ElementTreegrid from 'element-tree-grid' ;
 export default {
+    components:{
+     'el-table-tree-column':ElementTreegrid
+    },
     data(){
         return {
     // table的基础数据
