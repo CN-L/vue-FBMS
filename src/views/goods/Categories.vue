@@ -16,6 +16,8 @@
        prop="cat_name"
        label="分类名称"
        treeKey="cat_id"
+       levelKey="cat_level"
+       parentKey="cat_pid"
         width="180">
        
       </el-table-tree-column>
