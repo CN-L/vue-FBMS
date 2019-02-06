@@ -13,7 +13,7 @@ Vue.use(ElementUI);
 Vue.use(myrequire);
 Vue.config.productionTip = false;
 /* eslint-disable no-new */
-// 注册全局组建
+// 注册全局组件
 Vue.component(myBreadcrumb.name, myBreadcrumb);
 // 格式化日期
 Vue.filter('formDate', (value, fmtString) => {
