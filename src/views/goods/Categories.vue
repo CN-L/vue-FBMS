@@ -142,6 +142,7 @@ export default {
             if(status == 201){
                 // 清空表单
                 this.form.cat_name = '';
+                // 级联选择器清空
                 this.defaultProps.value = -1;
                 this.addVisible = false;
                 this.$message.success(msg)
@@ -154,6 +155,7 @@ export default {
         falseHandle(){
             this.addVisible = false;
             this.form.cat_name = '';
+            // 级联菜单清空
             this.defaultProps.value = -1;
         }
     },
