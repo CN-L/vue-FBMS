@@ -4,7 +4,7 @@
         <my-breadcrumb level1="商品管理" level2="商品列表"></my-breadcrumb>
      <!-- 添加按钮 -->
      <el-row :span="24" class="row">
-         <el-button type="success" @click="addVisible=true">添加分类</el-button>
+         <el-button type="success" @click="addList">添加分类</el-button>
      </el-row>
      <template>
         <el-table
@@ -60,12 +60,21 @@
               <el-input v-model="form.cat_name" auto-complete="off"></el-input>
             </el-form-item>
             <el-form-item label="分类列表" :label-width="formLabelWidth">
-
+                <el-cascader
+                    clearable
+                    placeholder="默认添加一级分类"
+                    :options="options"
+                    expand-trigger="hover"
+                    v-model="catId"
+                    change-on-select
+                    :props="defaultProps"
+                    >
+                </el-cascader>
             </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-            <el-button @click="addVisible = false">取 消</el-button>
-            <el-button type="primary" @click="daddVisible = false">确 定</el-button>
+            <el-button @click="falseHandle">取 消</el-button>
+            <el-button type="primary" @click="succList">确 定</el-button>
         </span>
 </el-dialog>
     </er-card>
@@ -84,6 +93,16 @@ export default {
       cat_name:'',
       cat_level:0
     },
+    // 绑定多级选择器使用的数据
+    options: [
+
+    ],
+    defaultProps:{
+        value:'cat_id',
+        label:'cat_name',
+        children:'children',
+    },
+    catId:[],
     // table的基础数据
     list:[],
     addVisible:false     
@@ -97,6 +116,45 @@ export default {
          if(status == 200){
              this.list = res.data.data;
          }
+        },
+        async addList(){
+            this.addVisible = true;
+            let res = await this.$http.get('/categories?type=2');
+            this.options = res.data.data;
+        },
+        // 点击确定按钮时候发送请求
+        // cat_pid 父节点id 0 
+        // cat_name节点名称
+        // cat_level级别 0 1 2
+        async succList(){
+            // 设置级别
+            this.form.cat_level = this.catId.length;
+            // 设置父id 子选择的catid长度为0 说明没有父级 自己就是一级 一级时为0
+              if( this.catId.length === 0 ){
+                  this.form.cat_pid = 0;
+              } else if (this.catId.length === 1 ){
+                  this.form.cat_pid = this.catId[0];
+              } else if (this.catId.length === 2 ){
+                  this.form.cat_pid = this.catId[1];
+              }
+            let res = await this.$http.post('/categories',this.form);
+            const {data: { meta: {msg, status} } } = res;
+            if(status == 201){
+                // 清空表单
+                this.form.cat_name = '';
+                this.defaultProps.value = -1;
+                this.addVisible = false;
+                this.$message.success(msg)
+                this.loadList();
+            }else{
+                this.$message.error(msg)
+            }
+        },
+        // 取消操作
+        falseHandle(){
+            this.addVisible = false;
+            this.form.cat_name = '';
+            this.defaultProps.value = -1;
         }
     },
     created(){
