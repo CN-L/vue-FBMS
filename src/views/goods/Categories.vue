@@ -25,9 +25,9 @@
             label="级别"
             width="180">
             <template slot-scope="scope">
-            <span v-if="scope.row.cat_level == 0">一级</span>
-            <span v-if="scope.row.cat_level == 1">二级</span>
-            <span v-if="scope.row.cat_level == 2">三级</span>
+            <span v-if="scope.row.cat_level === 0">一级</span>
+            <span v-if="scope.row.cat_level === 1">二级</span>
+            <span v-if="scope.row.cat_level === 2">三级</span>
             </template>
         </el-table-column>
         <el-table-column
@@ -42,12 +42,31 @@
         label="操作"
         >
         <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" circle></el-button>
+            <el-button @click = "handleEdit(scope.row)" type="primary" icon="el-icon-edit" circle></el-button>
             <el-button @click = "handleDelete(scope.row.cat_id)" type="danger" icon="el-icon-delete" circle></el-button>
         </template>
         </el-table-column>
         </el-table>
       </template>
+      <!-- 编辑对话框 -->
+      <el-dialog
+      title="编辑商品分类"
+      :visible.sync="editVisible"
+      :before-close="handleClose">
+         <el-form
+         :model="form"
+         label-width="100px">
+         <el-form-item label="分类名称">
+           <el-input v-model="form.cat_name" auto-complete = "off">
+           </el-input>
+         </el-form-item>
+    
+         </el-form>
+         <span slot="footer" class="dialog-footer">
+            <el-button @click="erroeHandleList">取 消</el-button>
+            <el-button type="primary" @click="editList">确 定</el-button>
+        </span>
+      </el-dialog>
       <!-- 添加对话框 -->
       <el-dialog
         title="添加分类"
@@ -93,6 +112,8 @@ export default {
       cat_name:'',
       cat_level:0
     },
+    // 编辑时候记录得分id
+    currentCatId:-1,
     // 绑定多级选择器使用的数据
     options: [
 
@@ -103,6 +124,7 @@ export default {
         children:'children',
     },
     catId:[],
+    editVisible:false,
     // table的基础数据
     list:[],
     addVisible:false     
@@ -122,18 +144,32 @@ export default {
             let res = await this.$http.get('/categories?type=2');
             this.options = res.data.data;
         },
+        // 点击编辑
+        async handleEdit(user){
+           // 显示当前的cat_name
+           this.form.cat_name = user.cat_name;
+           this.currentCatId = user.cat_id;
+           this.editVisible = true;
+        },
         // 点击删除按钮
         async handleDelete(catId){
+            let catId1 = Number(catId)
              //删除提示
              this.$confirm('是否要删除此分类','提示',{
                  confirmButtonText:"确定",
                  cancelButtonText:"取消",
                  type:'waring'
-             }).then(()=>{
-                 this.$message({
-                     type:'success',
-                     message:"删除成功!"
-                 });
+             }).then(async()=>{
+                 //点击确定删除按钮
+                 let res = await this.$http.delete(`categories/${catId1}`);
+                //  判断是否删除成功
+                let {data:{meta:{msg,status}}} = res
+                if(status == 200){
+                     this.$message.success(msg);
+                     this.loadList();
+                }else{
+                    this.$message.error(msg)
+                }
              }).catch(()=>{
                  this.$message({
                      type:'info',
@@ -170,13 +206,17 @@ export default {
                 this.$message.error(msg)
             }
         },
+        // 取消编辑操作
+        erroeHandleList(){
+            this.editVisible =false;
+        },
         // 取消操作
         falseHandle(){
             this.addVisible = false;
             this.form.cat_name = '';
             // 级联菜单清空
             this.defaultProps.value = -1;
-        }
+        },
     },
     created(){
       this.loadList();

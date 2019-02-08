@@ -53,6 +53,8 @@
                   >
                       {{level2.authName}}
                   </el-tag>
+                  <el-col :span="20">
+                  </el-col>
                 </el-col>
               </el-row>
            </el-col>
