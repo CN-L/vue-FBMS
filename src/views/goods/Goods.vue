@@ -9,7 +9,7 @@
                 <el-input v-model="searchValue" clearable placeholder="请输入内容" class="searchInput">
                 <el-button @click="handleSearch" slot="append" icon="el-icon-search"></el-button>
                 </el-input>
-                <el-button type="success" @click="addUserdialogFormVisible = true" plain>添加用户</el-button>
+                <el-button @click="$router.push('goods/add')" type="success" plain>添加商品</el-button>
             </el-col>
           </el-row>
           <!-- table表格 -->
@@ -88,5 +88,8 @@ export default {
 .searchInput {
   margin-top: 10px;
   width: 350px;
+}
+.el-table{
+    margin-top: 10px;
 }
 </style>

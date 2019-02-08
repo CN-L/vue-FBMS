@@ -8,6 +8,7 @@ import Authority from '@/views/authority/authority';
 import Roles from '@/views/authority/roles';
 import Categories from '@/views/goods/Categories';
 import Goods from '@/views/goods/Goods';
+import addList from '@/views/goods/addList'
 Vue.use(Router);
 
 let router = new Router({
@@ -23,7 +24,8 @@ let router = new Router({
         { name: 'rights', path: '/rights', component: Authority },
         { name: 'roles', path: '/roles', component: Roles },
         { name: 'categories', path: '/categories', component: Categories },
-        { name: 'goods', path: '/goods', component: Goods }
+        { name: 'goods', path: '/goods', component: Goods },
+        { name: 'goodsadd', path: '/goods/add', component: addList}
       ]
     }
   ]
