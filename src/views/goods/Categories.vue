@@ -43,7 +43,7 @@
         >
         <template slot-scope="scope">
             <el-button type="primary" icon="el-icon-edit" circle></el-button>
-            <el-button type="danger" icon="el-icon-delete" circle></el-button>
+            <el-button @click = "handleDelete(scope.row.cat_id)" type="danger" icon="el-icon-delete" circle></el-button>
         </template>
         </el-table-column>
         </el-table>
@@ -121,6 +121,25 @@ export default {
             this.addVisible = true;
             let res = await this.$http.get('/categories?type=2');
             this.options = res.data.data;
+        },
+        // 点击删除按钮
+        async handleDelete(catId){
+             //删除提示
+             this.$confirm('是否要删除此分类','提示',{
+                 confirmButtonText:"确定",
+                 cancelButtonText:"取消",
+                 type:'waring'
+             }).then(()=>{
+                 this.$message({
+                     type:'success',
+                     message:"删除成功!"
+                 });
+             }).catch(()=>{
+                 this.$message({
+                     type:'info',
+                     message:"已取消删除"
+                 });
+             })
         },
         // 点击确定按钮时候发送请求
         // cat_pid 父节点id 0 
