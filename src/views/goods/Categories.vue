@@ -151,6 +151,22 @@ export default {
            this.currentCatId = user.cat_id;
            this.editVisible = true;
         },
+        // 编辑后点击确定
+       async editList(user){
+          let res = await this.$http.put(`categories/${this.currentCatId}`,{
+               cat_name:this.form.cat_name
+           });
+        //    判断修改是否成功
+        let { data: {meta :{ msg, status } } } = res;
+        // 更新成功
+        if ( status = 200 ){
+            this.editVisible = false;
+           this.$message.success(msg);
+           this.loadList()
+        }else{
+            this.$message.error(msg)
+        }
+        },
         // 点击删除按钮
         async handleDelete(catId){
             let catId1 = Number(catId)
