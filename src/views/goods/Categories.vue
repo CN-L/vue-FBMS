@@ -120,10 +120,12 @@ export default {
     ],
     defaultProps:{
         value:'cat_id',
-        label:'cat_name',
+        label:'cat_name', 
         children:'children',
     },
     catId:[],
+    // 编辑按钮时候存储当前数据，以实现局部刷新
+    currentCat:{},
     editVisible:false,
     // table的基础数据
     list:[],
@@ -150,6 +152,8 @@ export default {
            this.form.cat_name = user.cat_name;
            this.currentCatId = user.cat_id;
            this.editVisible = true;
+           //  存储数据
+           this.currentCat = user;
         },
         // 编辑后点击确定
        async editList(user){
@@ -159,10 +163,11 @@ export default {
         //    判断修改是否成功
         let { data: {meta :{ msg, status } } } = res;
         // 更新成功
-        if ( status = 200 ){
+        if( status = 200 ){
             this.editVisible = false;
            this.$message.success(msg);
-           this.loadList()
+           // 修改完数据进行局部加载
+           this.currentCat.cat_name = res.data.data.cat_name;
         }else{
             this.$message.error(msg)
         }
