@@ -41,7 +41,7 @@
     </el-aside>
     <el-main class="main">
         <!-- 占位符 -->
-        <router-view/>
+        <router-view/> 
     </el-main>
   </el-container>
  </el-container>
