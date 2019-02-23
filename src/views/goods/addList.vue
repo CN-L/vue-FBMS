@@ -4,7 +4,7 @@
       <el-alert
         title="添加商品信息"
         class="alert"
-        :closable="fasle"
+        :closable="false"
         type="info"
         center
         show-icon>
@@ -52,12 +52,18 @@
                </el-form-item>
             </el-tab-pane>
             <el-tab-pane  label="商品参数">
-                <el-form-item>
-                <el-checkbox-group v-model="checkList">
-                    <el-checkbox label="复选框 A"></el-checkbox>
-                    <el-checkbox label="复选框 B"></el-checkbox>
-                </el-checkbox-group>
-            </el-form-item>  
+                <el-form-item
+                v-for="item in dynamicParams"
+                :key="item.attr_id"
+                :label="item.attr_name">
+                      <el-checkbox
+                      checked
+                      border
+                      v-for="param in item.params"
+                      :label="param"
+                      :key="param">
+                      </el-checkbox>
+                </el-form-item>  
             </el-tab-pane>
             <el-tab-pane label="商品属性">角色管理</el-tab-pane>
             <el-tab-pane label="商品图片">图片</el-tab-pane>
@@ -75,6 +81,10 @@ export default {
          active:0,
         //  选项卡位置
          tabPosition:'left',
+        //  动态参数
+        dynamicParams:[],
+        // 静态参数
+        staticParams:[],
          form:{
             //  表单数据
            goods_name:'',
@@ -93,13 +103,24 @@ export default {
        this.loadOptions();
     },
     methods:{
+        // 加载动态参数
+        async loadParams(){
+            let res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=many`)
+            this.dynamicParams = res.data.data;
+            this.dynamicParams.map((item)=>{
+                // 给对象新加属性
+                item.params = item.attr_vals.length== 0 ? []: item.attr_vals.split(',');
+            });
+        },
         handleClick(tab,event){
            this.active = tab.index - 0;
         //    判断当前点击的组件tap是否为商品参数 商品属性
         if(tab.index === '1' || tab.index === '2'){
             //判断基本信息中的多级下拉是否为三级菜单
             if(this.selectedOptions.length !==3){
-                this.$message.warning('请先选择商品的分类')
+                this.$message.warning('请先选择商品的分类');
+            }else{
+                this.loadParams();
             }
             
         }
@@ -109,7 +130,7 @@ export default {
            if(this.selectedOptions.length !== 3){
                 //  在这个数组不等于三时，说明点击的不是三级菜单，不可选中
                 this.selectedOptions.length = 0;
-                this.$message.warning("请选择三级分类")
+                this.$message.warning("请选择三级分类");
            }
         },
         // 加载多级下拉的数据
@@ -128,5 +149,8 @@ export default {
 }
 .el-step__title{
     font-size: 12px;
+}
+.el-checkbox{
+    margin-bottom: 5px;
 }
 </style>
