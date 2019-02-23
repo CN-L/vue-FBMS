@@ -31,7 +31,7 @@
                 <el-input v-model="form.goods_name"></el-input>
                </el-form-item>
                <el-form-item label="商品价格">
-                <el-input v-model="form.godds_price"></el-input>
+                <el-input v-model="form.goods_price"></el-input>
                </el-form-item>
                <el-form-item label="商品重量">
                 <el-input v-model="form.weight"></el-input>
@@ -65,7 +65,14 @@
                       </el-checkbox>
                 </el-form-item>  
             </el-tab-pane>
-            <el-tab-pane label="商品属性">角色管理</el-tab-pane>
+            <el-tab-pane label="商品属性">
+                <el-form-item
+                v-for="item in staticParams"
+                :key="item.attr_id"
+                :label="item.attr_name">
+                <el-input v-model="item.attr_vals"></el-input>
+                </el-form-item>
+            </el-tab-pane>
             <el-tab-pane label="商品图片">图片</el-tab-pane>
             <el-tab-pane label="商品内容">定时任务补偿</el-tab-pane>
         </el-tabs>
@@ -80,6 +87,9 @@ export default {
         //点击基本信息时active为0 商品参数时为1 
          active:0,
         //  选项卡位置
+        ruleForm:{
+
+        },
          tabPosition:'left',
         //  动态参数
         dynamicParams:[],
@@ -104,13 +114,19 @@ export default {
     },
     methods:{
         // 加载动态参数
-        async loadParams(){
-            let res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=many`)
-            this.dynamicParams = res.data.data;
-            this.dynamicParams.map((item)=>{
+        async loadParams(index){
+            let sel = index ==='1' ? 'many':'only'
+            let res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=${sel}`);
+            if(sel === 'many'){
+                this.dynamicParams = res.data.data;
+                this.dynamicParams.map((item)=> {
                 // 给对象新加属性
-                item.params = item.attr_vals.length== 0 ? []: item.attr_vals.split(',');
+                item.params = item.attr_vals.length== 0 ? [] : item.attr_vals.split(',');
             });
+            }else{
+                this.staticParams = res.data.data;
+            }
+           
         },
         handleClick(tab,event){
            this.active = tab.index - 0;
@@ -120,7 +136,7 @@ export default {
             if(this.selectedOptions.length !==3){
                 this.$message.warning('请先选择商品的分类');
             }else{
-                this.loadParams();
+                this.loadParams(tab.index);
             }
             
         }
