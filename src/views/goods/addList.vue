@@ -76,23 +76,37 @@
             <el-tab-pane label="商品图片">
                 <!-- action上传地址 file-list图片列表-->
                 <el-upload
+                    :headers="headers"
                     class="upload-demo"
-                    action="https://"
+                    action = "http://localhost:8888/api/private/v1/upload"
                     :on-remove="handleRemove"
                     :on-success="handleSuccess"
                     list-type="picture">
                     <el-button size="small" type="primary">点击上传</el-button>
                 </el-upload>
             </el-tab-pane>
-            <el-tab-pane label="商品内容">定时任务补偿</el-tab-pane>
+            <el-tab-pane label="商品内容">
+                <!-- 富文本框 -->
+                <quill-editor v-model="form.goods_introduce">
+
+                </quill-editor>
+            </el-tab-pane>
         </el-tabs>
         </el-form>
         <!-- 表单 -->
     </el-card>
 </template>
 <script>
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+
+import { quillEditor } from 'vue-quill-editor'
 export default {
-    data(){
+     components:{
+            quillEditor
+        },
+      data(){
         return{
         //点击基本信息时active为0 商品参数时为1 
          active:0,
@@ -105,14 +119,20 @@ export default {
         dynamicParams:[],
         // 静态参数
         staticParams:[],
+        headers:{
+             'Authorization': sessionStorage.getItem('token')
+        },
+         index:'',
          form:{
             //  表单数据
            goods_name:'',
            goods_price:'',
            goods_number:'',
            goods_weight:'',
+           goods_introduce:'',
         //    商品分类id 1,2,3
-           goods_cat:''
+           goods_cat:'',
+           pics:[]
          },
         //  多级选择器数据 数据 绑定的多个id
          options:[],
@@ -123,6 +143,24 @@ export default {
        this.loadOptions();
     },
     methods:{
+        // 图片上传
+        handleRemove(file,fileList){
+            let  list = this.form.pics;
+            for(var i = 0;i<list.length;i++){
+                if(list[i] == file.response.data.tem_path){
+                     this.index = i;
+                }
+            }
+            this.form.pics.splice(this.index,1)
+            console.log(this.form.pics)
+        },
+        handleSuccess(response,file,fileList){
+            if(response.meta.status==200){
+               this.form.pics.push(response.tem_path) 
+            }else{
+                this.$message.error('上传失败')
+            }
+        },
         // 加载动态参数
         async loadParams(index){
             let sel = index ==='1' ? 'many':'only'
@@ -178,5 +216,8 @@ export default {
 }
 .el-checkbox{
     margin-bottom: 5px;
+}
+.ql-editor{
+    height: 400px;
 }
 </style>
