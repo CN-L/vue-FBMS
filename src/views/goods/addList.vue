@@ -73,7 +73,17 @@
                 <el-input v-model="item.attr_vals"></el-input>
                 </el-form-item>
             </el-tab-pane>
-            <el-tab-pane label="商品图片">图片</el-tab-pane>
+            <el-tab-pane label="商品图片">
+                <!-- action上传地址 file-list图片列表-->
+                <el-upload
+                    class="upload-demo"
+                    action="https://"
+                    :on-remove="handleRemove"
+                    :on-success="handleSuccess"
+                    list-type="picture">
+                    <el-button size="small" type="primary">点击上传</el-button>
+                </el-upload>
+            </el-tab-pane>
             <el-tab-pane label="商品内容">定时任务补偿</el-tab-pane>
         </el-tabs>
         </el-form>
