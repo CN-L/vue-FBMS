@@ -86,6 +86,7 @@
                 </el-upload>
             </el-tab-pane>
             <el-tab-pane label="商品内容">
+            <el-button @click="handleAdd">添加商品</el-button>
                 <!-- 富文本框 -->
                 <quill-editor v-model="form.goods_introduce">
 
@@ -153,6 +154,28 @@ export default {
             }
             this.form.pics.splice(this.index,1)
             console.log(this.form.pics)
+        },
+        // 添加商品
+        async handleAdd(){
+             this.form.goods_cat = this.selectedOptions.join(',');
+            //  动态参数
+             let arr1 = this.dynamicParams.map((item)=>{
+                 return {'attr_id':item.attr_id,'attr_value':item.params.join(',')};
+             });
+            //  静态参数
+            let arr2 = this.staticParams.map((item)=>{
+                return { 'attr_id':item.attr_id,'attr_value':item.attr_vals}
+            })
+            // 合并数组,相当于平铺
+            this.form.attrs = [...arr1, ...arr2];
+            const res = await this.$http.post(`/goods`,this.form);
+            let {meta:{status,msg}} = res.data;
+            if(status==201){
+            //   this.$message.success(msg);
+            this.$router.push('/goods');
+            }else{
+                this.$message.error(msg)
+            }
         },
         handleSuccess(response,file,fileList){
             if(response.meta.status==200){
