@@ -131,6 +131,7 @@ export default {
            goods_number:'',
            goods_weight:'',
            goods_introduce:'',
+           attrs:[],
         //    商品分类id 1,2,3
            goods_cat:'',
            pics:[]
@@ -168,11 +169,11 @@ export default {
             })
             // 合并数组,相当于平铺
             this.form.attrs = [...arr1, ...arr2];
-            const res = await this.$http.post(`/goods`,this.form);
+            const res = await this.$http.post('goods',this.form);
             let {meta:{status,msg}} = res.data;
             if(status==201){
             //   this.$message.success(msg);
-            this.$router.push('/goods');
+            this.$router.push('goods');
             }else{
                 this.$message.error(msg)
             }
