@@ -13,16 +13,17 @@
             请选择商品分类:
             <!-- 层级选择器 -->
             <el-cascader
+            placeholder="请选择商品分类"
             expand-trigger="hover"
             :options="options"
-            :props=" { label:'attr_name', value:'attr_id' }"
+            :props=" { label:'cat_name', value:'cat_id' }"
             v-model="selectedOptions"
             @change="handleChange">
            </el-cascader>
            <!-- tab栏切换 -->
             <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="动态参数" name="many">
-                    <el-button type="primary">添加动态参数</el-button>
+                    <el-button type="primary" :disabled ="this.selectedOptions.length!==3">添加动态参数</el-button>
                     <el-table
                     border
                     stripe
@@ -39,7 +40,7 @@
                     width="60">
                     </el-table-column>
                     <el-table-column
-                    prop="attr_name"
+                    prop="cat_name"
                     label="商品参数"
                     width="180">
                     </el-table-column>
@@ -53,7 +54,7 @@
                     </el-table>
                 </el-tab-pane>
                 <el-tab-pane label="静态参数" name="only">
-                    <el-button type="primary">添加静态参数</el-button>
+                    <el-button type="primary" :disabled = "this.selectOptions.length==3">添加静态参数</el-button>
                     <el-table
                     border
                     stripe
@@ -64,7 +65,7 @@
                     width="60">
                     </el-table-column>
                     <el-table-column
-                    prop="attr_name"
+                    prop="cat_name"
                     label="属性名称"
                     width="180">
                     </el-table-column> <el-table-column
@@ -98,14 +99,24 @@ export default {
           tableData:[]
         };
     },
+    created(){
+        this.loadOptions();
+    },
     methods:{
-
+        // 加载下拉框
+      async loadOptions(){
+         let res = await this.$http.get('categories?type=3')
+           this.options = res.data.data;
+      }
     }
 }
 </script>
 <style>
     .el-alert{
         margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .el-button{
         margin-bottom: 10px;
     }
 </style>
