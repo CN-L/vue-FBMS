@@ -32,7 +32,14 @@
                     <el-table-column
                     type="expand">
                         <template slot-scope="scope">
-                            
+                            <!-- tag标签 -->
+                            <el-tag
+                            v-for="item in scope.row.params"
+                            :key="item"
+                            closable
+                            @close="handleClose(item)">
+                            {{item}}
+                            </el-tag>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -122,6 +129,12 @@ export default {
                 // this.$message.success(msg)
                 // 表格赋值
                 this.tableData = res.data.data;
+                // 动态参数把attr_vals转换成数组
+                if(this.activeName ="many"){
+                    this.tableData.forEach((item)=>{
+                           item.params = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
+                    })
+                }
             }else{
                 this.$message.error(msg);
             }
@@ -130,11 +143,18 @@ export default {
       },
       handleClick(){
           this.loadData();
+      },
+    //   点击关闭
+      handleClose(item){
+
       }
     }
 }
 </script>
 <style>
+    .el-tag + .el-tag{
+        margin-left: 10px;
+    }
     .el-alert{
         margin-top: 10px;
         margin-bottom: 10px;
