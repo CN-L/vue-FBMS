@@ -37,7 +37,7 @@
                             v-for="item in scope.row.params"
                             :key="item"
                             closable
-                            @close="handleClose(item)">
+                            @close="handleClose(item,scope.row)">
                             {{item}}
                             </el-tag>
                         </template>
@@ -132,7 +132,10 @@ export default {
                 // 动态参数把attr_vals转换成数组
                 if(this.activeName ="many"){
                     this.tableData.forEach((item)=>{
-                           item.params = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
+                        // 动态增加的成员，vue不会监听它的变化
+                           let arr = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
+                        //    给谁添加对象，名称，值
+                           this.$set(item, 'params', arr)
                     })
                 }
             }else{
@@ -145,8 +148,16 @@ export default {
           this.loadData();
       },
     //   点击关闭
-      handleClose(item){
-
+      handleClose(tag,param){
+        //  查询item在数组中的位置
+        // params是动态参数对象 tag是显示的文字
+      let index = param.params.findIndex((item)=>{
+           if ( tag === item ){
+               return true;
+           }
+       })
+       //   数组中删除当前这一项 z只是名义上删除了这一项，但是数据并没有真正的删除
+       param.params.splice(index,1);
       }
     }
 }
