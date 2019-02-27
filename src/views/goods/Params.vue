@@ -23,7 +23,7 @@
            <!-- tab栏切换 -->
             <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="动态参数" name="many">
-                    <el-button type="primary" disabled="this.selectedOptions.length !==3">添加动态参数</el-button>
+                    <el-button type="primary" :disabled="this.selectedOptions.length !==3">添加动态参数</el-button>
                     <el-table
                     border
                     stripe
@@ -61,7 +61,7 @@
                     </el-table>
                 </el-tab-pane>
                 <el-tab-pane label="静态参数" name="only">
-                    <el-button type="primary" disabled ="this.selectOptions.length !==3">添加静态参数</el-button>
+                    <el-button type="primary" :disabled ="this.selectedOptions.length !==3">添加静态参数</el-button>
                     <el-table
                     border
                     stripe
@@ -121,26 +121,28 @@ export default {
       },
     //   加载表格数据
      async loadData(){
-         if(this.selectedOptions.length == 3){
+        //  选择三级时加载
+         if(this.selectedOptions.length === 3){
+            //  清空
              this.tableData.length = 0;
             let res = await this.$http.get(`categories/${this.selectedOptions[2]}/attributes?sel=${this.activeName}`)
             const {meta:{msg,status}} = res.data;
+            // 有问题
             if(status==200){
-                // this.$message.success(msg)
                 // 表格赋值
                 this.tableData = res.data.data;
                 // 动态参数把attr_vals转换成数组
-                if(this.activeName ="many"){
+                if(this.activeName == "many"){
                     this.tableData.forEach((item)=>{
                         // 动态增加的成员，vue不会监听它的变化
                            let arr = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
-                        //    给谁添加对象，名称，值
+                        //   给谁添加对象，名称，值
                            this.$set(item, 'params', arr)
                     })
                 }
+            }
             }else{
                 this.$message.error(msg);
-            }
          } 
        
       },
@@ -151,13 +153,13 @@ export default {
       handleClose(tag,param){
         //  查询item在数组中的位置
         // params是动态参数对象 tag是显示的文字
-      let index = param.params.findIndex((item)=>{
+      let itemIndex = param.params.findIndex((item)=>{
            if ( tag === item ){
                return true;
            }
        })
        //   数组中删除当前这一项 z只是名义上删除了这一项，但是数据并没有真正的删除
-       param.params.splice(index,1);
+       param.params.splice(itemIndex,1);
       }
     }
 }
