@@ -131,8 +131,8 @@ export default {
             if(status==200){
                 // 表格赋值
                 this.tableData = res.data.data;
-                // 动态参数把attr_vals转换成数组
-                if(this.activeName == "many"){
+                // 动态参数把attr_vals转换成数组 =相当于赋值，因此出错
+                if(this.activeName =="many"){
                     this.tableData.forEach((item)=>{
                         // 动态增加的成员，vue不会监听它的变化
                            let arr = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
@@ -150,17 +150,33 @@ export default {
           this.loadData();
       },
     //   点击关闭
-      handleClose(tag,param){
-        //  查询item在数组中的位置
-        // params是动态参数对象 tag是显示的文字
-      let itemIndex = param.params.findIndex((item)=>{
-           if ( tag === item ){
-               return true;
-           }
-       })
-       //   数组中删除当前这一项 z只是名义上删除了这一项，但是数据并没有真正的删除
-       param.params.splice(itemIndex,1);
+      async handleClose(tag,param){  
+          // 分类id this.selectionOptions里
+         // 请求数据id params.attr_id
+         // 这是最新的值 因后台接口有点小问题，因此将此条js放在了最上面  数组中删除某一项
+              //  查询item在数组中的位置
+                    // params是动态参数对象 tag是显示的文字
+                let itemIndex = param.params.findIndex((item)=>{
+                    if ( tag === item ){
+                        return true;
+                    }
+                })
+               param.params.splice(itemIndex,1);
+          let res = await this.$http.put(`categories/${this.selectedOptions[2]}/attributes/${param.attr_id}`,{
+              'attr_vals': param.params.join(','),
+              'attr_sel': this.activeName,
+              'attr_name': param.attr_name
+          });
+          let { meta:{msg,status}} = res.data;
+          if(status == 200){
+               this.$message.success(msg)
+
+          }else{
+              this.$message.error(msg);
+          }
+
       }
+
     }
 }
 </script>
