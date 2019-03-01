@@ -40,6 +40,17 @@
                             @close="handleClose(item,scope.row)">
                             {{item}}
                             </el-tag>
+                            <el-input
+                            class="input-new-tag"
+                            v-if="inputVisible"
+                            v-model="inputValue"
+                            ref="saveTagInput"
+                            size="small"
+                            @keyup.enter.native="handleInputConfirm(scope.row)"
+                            @blur="handleInputConfirm"
+                            >
+                            </el-input>
+                            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
                         </template>
                     </el-table-column>
                     <el-table-column
@@ -103,7 +114,10 @@ export default {
           selectedOptions:[],
         //   选中动态或者静态返回name值
           activeName: "many",
-          tableData:[]
+          tableData:[],
+        //   文本框默认不显示
+          inputVisible : false,
+          inputValue:''
         };
     },
     created(){
@@ -149,6 +163,31 @@ export default {
       handleClick(){
           this.loadData();
       },
+    //   添加动态参数
+     async handleInputConfirm(row){
+        //  获取文本框的值
+        let inputValue = this.inputValue;
+        // 为空return
+        if (!inputValue) {
+          return;
+        }
+        // 不为空添加到数组
+        row.params.push(inputValue);
+        // 向服务器发送请求
+        
+
+        this.inputVisible = false;
+        this.inputValue = '';
+    },
+    // 点击添加tag标签
+    async showInput(){
+        // 显示编辑框
+        this.inputVisible = true;
+        // 点击时候获取焦点
+        this.$nextTick(_ => {
+          this.$refs.saveTagInput.$refs.input.focus();
+        });
+    },
     //   点击关闭
       async handleClose(tag,param){  
           // 分类id this.selectionOptions里
@@ -188,7 +227,16 @@ export default {
         margin-top: 10px;
         margin-bottom: 10px;
     }
-    .el-button{
-        margin-bottom: 10px;
-    }
+    .button-new-tag {
+    margin-left: 10px;
+    height: 32px;
+    line-height: 30px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .input-new-tag {
+    width: 90px;
+    margin-left: 10px;
+    vertical-align: bottom;
+  }
 </style>
