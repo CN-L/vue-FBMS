@@ -47,7 +47,7 @@
                             ref="saveTagInput"
                             size="small"
                             @keyup.enter.native="handleInputConfirm(scope.row)"
-                            @blur="handleInputConfirm"
+                            @blur="handleInputConfirm(scope.row)"
                             >
                             </el-input>
                             <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
@@ -164,23 +164,23 @@ export default {
           this.loadData();
       },
     //   添加动态参数
-     async handleInputConfirm(row){
+      handleInputConfirm(row){
         //  获取文本框的值
         let inputValue = this.inputValue;
         // 为空return
-        if (!inputValue) {
-          return;
-        }
-        // 不为空添加到数组
+        if (inputValue) {
+          // 不为空添加到数组
         row.params.push(inputValue);
+         console.log(row.params)
         // 向服务器发送请求
-        
+        }
 
         this.inputVisible = false;
         this.inputValue = '';
+        
     },
     // 点击添加tag标签
-    async showInput(){
+       showInput(){
         // 显示编辑框
         this.inputVisible = true;
         // 点击时候获取焦点
@@ -195,12 +195,12 @@ export default {
          // 这是最新的值 因后台接口有点小问题，因此将此条js放在了最上面  数组中删除某一项
               //  查询item在数组中的位置
                     // params是动态参数对象 tag是显示的文字
-                let itemIndex = param.params.findIndex((item)=>{
+                let index = param.params.findIndex((item)=>{
                     if ( tag === item ){
                         return true;
                     }
                 })
-               param.params.splice(itemIndex,1);
+               param.params.splice(index,1);
           let res = await this.$http.put(`categories/${this.selectedOptions[2]}/attributes/${param.attr_id}`,{
               'attr_vals': param.params.join(','),
               'attr_sel': this.activeName,
@@ -222,10 +222,6 @@ export default {
 <style>
     .el-tag + .el-tag{
         margin-left: 10px;
-    }
-    .el-alert{
-        margin-top: 10px;
-        margin-bottom: 10px;
     }
     .button-new-tag {
     margin-left: 10px;
