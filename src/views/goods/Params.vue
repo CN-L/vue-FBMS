@@ -243,6 +243,12 @@ export default {
     padding-top: 0;
     padding-bottom: 0;
   }
+  .el-card{
+    height: 100%;
+  }
+  .el-button{
+    margin-bottom: 10px;
+  }
   .input-new-tag {
     width: 90px;
     margin-left: 10px;
