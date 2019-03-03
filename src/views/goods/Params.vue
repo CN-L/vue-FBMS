@@ -164,20 +164,33 @@ export default {
           this.loadData();
       },
     //   添加动态参数
-      handleInputConfirm(row){
+      async handleInputConfirm(row){
         //  获取文本框的值
         let inputValue = this.inputValue;
         // 为空return
         if (inputValue) {
           // 不为空添加到数组
         row.params.push(inputValue);
-         console.log(row.params)
         // 向服务器发送请求
+        let res = await this.$http.put(`categories/${this.selectedOptions[2]}/attributes/${row.attr_id}`,{
+          attr_vals:row.params.join(','),
+          attr_name:row.attr_name,
+          attr_sel: this.activeName
+        })
+        let { meta : {msg,status}} =res.data;
+        // 请求成功 显示成功提示 关闭输入框tag标签
+        if(status == 200){
+          this.$message.success(msg);
+          this.inputVisible = false;
+          this.inputValue = '';
+        }else{
+          this.$message.error(msg);
         }
-
-        this.inputVisible = false;
-        this.inputValue = '';
-        
+        // 没有值直接关闭tag标签
+        }else{
+          this.inputVisible = false;
+          this.inputValue = '';
+        }  
     },
     // 点击添加tag标签
        showInput(){
