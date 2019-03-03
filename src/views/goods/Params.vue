@@ -196,7 +196,7 @@ export default {
        showInput(){
         // 显示编辑框
         this.inputVisible = true;
-        // 点击时候获取焦点
+        // 点击时候获取焦点 $nextTick下一次dom更新循环后执行
         this.$nextTick(_ => {
           this.$refs.saveTagInput.$refs.input.focus();
         });
