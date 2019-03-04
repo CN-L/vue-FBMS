@@ -65,7 +65,7 @@ export default {
         } = res;
         // 更新页码
         this.pagenum = pagenum;
-        //更新总条数
+        // 更新总条数
         this.count = total;
         let {
           data: {

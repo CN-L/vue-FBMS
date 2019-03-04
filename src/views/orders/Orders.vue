@@ -53,29 +53,54 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pagenum"
+      :page-sizes="[10, 20, 30, 40]"
+      :page-size="pagesize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+    </el-pagination>
     </el-card>
 </template>
 <script>
 export default {
     data(){
         return {
-            tableData:[]
-
+            tableData:[],
+            // 分页数据
+            // 当前页码
+            pagenum:1,
+            // 默认每页显示多少条
+            pagesize:10,
+            // 总条数
+            total:0
         }; 
     },
     created(){
       this.loadList();
     },
-    methods:{
-     async loadList(){
-       let res = await this.$http.get(`orders?pagenum=1&pagesize=10`);
+    methods:{ 
+       async loadList(){
+       let res = await this.$http.get(`orders?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
        let { meta: { msg, status } } = res.data;
        if( status == 200){
+            this.total = res.data.data.total;
             this.tableData = res.data.data.goods;
        }else{
          this.$message.error(msg);
        }
-     }
+     },
+      handleSizeChange(val) {
+        this.pagesize = val;
+        this.loadList();
+      },
+      handleCurrentChange(val) {
+        this.pagenum = val;
+        this.loadList();
+      },
+    
     }
 
 }  
@@ -83,5 +108,6 @@ export default {
 <style>
  .el-table{
      margin-top: 10px;
+     margin-bottom: 10px;
  }
 </style>
