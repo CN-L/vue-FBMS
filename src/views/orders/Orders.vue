@@ -123,13 +123,8 @@ export default {
     methods:{ 
        async loadList(){
        let res = await this.$http.get(`orders?pagenum=${this.pagenum}&pagesize=${this.pagesize}`);
-       let { meta: { msg, status } } = res.data;
-       if( status == 200){
             this.total = res.data.data.total;
             this.tableData = res.data.data.goods;
-       }else{
-         this.$message.error(msg);
-       }
      },
       handleSizeChange(val) {
         this.pagesize = val;
