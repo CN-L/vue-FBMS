@@ -48,11 +48,13 @@
            type="primary"
            icon="el-icon-edit"
            size="mini"
-           plain>
+           plain
+           @click="showClick">
            </el-button>
         </template>
       </el-table-column>
     </el-table>
+    <!-- 分页 -->
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
@@ -62,9 +64,35 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
     </el-pagination>
+    <!-- 对话框 -->
+    <el-dialog title="修改订单地址"
+    :visible.sync="dialogFormVisible">
+        <el-form
+        :label-width="formLabelWidth"
+        :model="form">
+          <el-form-item label="省市区/县">
+            <!-- 多级下拉 -->
+            <el-cascader
+              expand-trigger="hover"
+              :options="options"
+              v-model="selectedOptions"
+              @change="handleChange">
+            </el-cascader>
+          </el-form-item>
+          <el-form-item label="详细地址">
+              <el-input v-model="form.address" autocomplete="off"></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        </div>
+      </el-dialog>
     </el-card>
 </template>
 <script>
+import  citydata from './city_data2017_element.js';
+
 export default {
     data(){
         return {
@@ -75,7 +103,18 @@ export default {
             // 默认每页显示多少条
             pagesize:10,
             // 总条数
-            total:0
+            total:0,
+            // 对话框显示与隐藏
+            dialogFormVisible:false,
+            // 下拉框
+            options:[],
+            selectedOptions:[],
+            form:{
+              // 详细地址
+              address: '',
+              // 多级下拉数据
+              region:[]
+            }
         }; 
     },
     created(){
@@ -100,7 +139,13 @@ export default {
         this.pagenum = val;
         this.loadList();
       },
-    
+      // 点击编辑按钮
+     async showClick(){
+      //  打开对话框
+       this.dialogFormVisible = true;
+      //  加载多级下拉数据
+      this.options = citydata;
+     }
     }
 
 }  
