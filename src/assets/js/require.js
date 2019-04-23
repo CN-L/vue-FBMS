@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {Message} from 'vue';
+import { Message } from 'element-ui';
+import  {Loading} from 'element-ui';
 const myRequire = {};
 // 插件必须提供一个install方法
 myRequire.install = function(Vue) {
@@ -35,6 +36,21 @@ myRequire.install = function(Vue) {
   });
   // 配置全局axios
   Vue.prototype.$http = axios;
+  //添加vue实例方法，供所有组件使用
+  Vue.prototype.startLoading = function(){
+    const loading = this.$loading({
+      lock: true,
+      text: '数据加载中',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    });
+    return loading;
+  }
+  Vue.prototype.closeLoading = function(loading){
+   setTimeout(()=>{
+     loading.close()
+   },200)
+  }
 };
 // 导出成员
 export default myRequire;

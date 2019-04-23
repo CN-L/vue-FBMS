@@ -69,12 +69,15 @@ export default {
     methods:{
         // 获取商品列表
         async loadList(){
+           let letter = this.startLoading();//loading开启
           let res = await this.$http.get('goods?pagenum=1&pagesize=10');
           let { meta: {msg, status}} = res.data;
           if(status == 200){
             //  请求成功
+            this.closeLoading(letter)//关闭loading
             this.list = res.data.data.goods
           }else {
+              this.closeLoading(letter)
               this.$message.error(msg)
           }
         }
